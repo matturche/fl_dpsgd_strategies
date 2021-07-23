@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "leafdp"
+version = "0.1.0"
+description = "Leaf benchmark implementation with Flower and Opacus."
+authors = ["Matthieu MOREAU <matth.more@lilo.org>"]
+
+[tool.poetry.dependencies]
+python = "^3.7.1,<4.0"
+torch = "^1.8.0"
+torchaudio = "^0.8.0"
+torchvision = "^0.9.0"
+flwr = "^0.16.0"
+opacus = "^0.14.0"
+typing-extensions = "^3.7.4"
+pandas = "^1.2.3"
+sklearn = "^0.0"
+scipy = "^1.6.1"
+ray = {extras = ["tune"], version = "^1.2.0"}
+matplotlib = "^3.4.1"
+tqdm = "^4.61.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
