@@ -1,18 +1,18 @@
-# Federated Learning and Differential privacy experiments on LEAF benchmark
+# DPSGD Strategies for Cross-Silo Federated Learning
 
 ## Presentation
-The aim of this project is to show different uses of Federated Learning and Differential Privacy. Three methods are proposed to obtain the desired privacy budget: fixed, adaptive and hybrid. All these methods refers to the way we obtain the noise multiplier applied to the gradient during the SGD-DP algorithm. For Federated Learning, [Flower](https://flower.dev/) is used and for Differential Privacy, [Opacus](https://opacus.ai/) was chosen. 
+This project aims to show different uses of Federated Learning and Differential Privacy. Three methods are proposed to obtain the desired privacy budget: fixed, adaptive, and hybrid. All these methods refer to the way we obtain the noise multiplier applied to the gradient during the DPSGD algorithm. For Federated Learning, [Flower](https://flower.dev/) is used and for Differential Privacy, [Opacus](https://opacus.ai/) was chosen. 
 
 We chose to use the [LEAF](https://leaf.cmu.edu/) benchmark to show the results of our method as it is one of the only benchmarks available at the time for Federated settings.
 This repository is made to act as an extension of the LEAF repository. Follow the installation instructions on the [LEAF github](https://github.com/TalwalkarLab/leaf/tree/master/data/femnist) before continuing. Once it's done download this repository and paste it inside the root directory of LEAF.
-To construct the FEMNIST dataset as we did you should run the `preprocess.sh` file with the full-sized dataset command, as stated in their github.
+To construct the FEMNIST dataset as we did you should run the `preprocess.sh` file with the full-sized dataset command, as stated in their GitHub.
 
 ## Installation
 You can create the virtual environment and install dependencies using [Poetry](https://python-poetry.org/). If it was not already installed on your computer you should restart it so Poetry commands can work on your terminal. Move to the root of this project ("leaf-fl-dp" directory) and run `poetry install`. Then run `poetry shell` to instantiate the virtual environment.
 
 ## Usage
 ### Vanilla 
-For hyperparameters and trainig vanilla models (with or without DP) all happens in the `vanilla/` folder. Before using any python file on their own, you should run the following command: `export BASEPATH="your_path_to_leaf_repo/"`. So that scripts execute correctly.
+For hyperparameters and training vanilla models (with or without DP) all happens in the `vanilla/` folder. Before using any python file on its own, you should run the following command: `export BASEPATH="your_path_to_leaf_repo/"`. So that scripts execute correctly.
 
 Hyperparameters search is done by running `find_hyperparameters.py`, with the following possible arguments:
 
@@ -28,7 +28,7 @@ Hyperparameters search is done by running `find_hyperparameters.py`, with the fo
 ```
 The best model found will be saved in the `hyperparam_finding/` directory.
 
-For training models you should launch `train.py`. You can add the following arguments to the script:
+For training models, you should launch `train.py`. You can add the following arguments to the script:
 
 ```python
 -d: str = Which dataset to use for training. (femnist, mnist, cifar10).
@@ -46,7 +46,7 @@ Trained models and results can be found in the `models/` directory.
 
 ### Federated 
 
-For running federated models, you first have to remake the FEMNIST dataset, as it normally is composed of 32 json files containing the clients' data. Except that in Flower's case, we are simulating distant clients so we can't afford to load each json files N times in search of our dataset. To this effect, you should run `model_utils.py` in `/leafdp/utils/` so that it creates one json file per client:
+For running federated models, you first have to remake the FEMNIST dataset, as it normally is composed of 32 JSON files containing the clients' data. Except that in Flower's case, we are simulating distant clients so we can't afford to load each JSON file N times in search of our dataset. To this effect, you should run `model_utils.py` in `/leafdp/utils/` so that it creates one JSON file per client:
 
 ```shell
 python model_utils.py -d femnist -t 1 -cs 1 -nb 350
@@ -71,8 +71,8 @@ With:
 ```python
 -- NBCLIENTS: int = The number of clients to launch. 2 by default.
 -- NBMINCLIENTS: int = The number of clients to wait before launching federated training. 2 by default.
--- NBFITCLIENTS: int = The number of clients sampled each rounds. 2 by default.
--- CENTRALIZED: int(bool) = Whether the model is evaluated on the server or on the client side. Defaults to 1.
+-- NBFITCLIENTS: int = The number of clients sampled each round. 2 by default.
+-- CENTRALIZED: int(bool) = Whether the model is evaluated on the server or the client-side. Defaults to 1.
 -- BATCHSIZE: int = Number of elements per batch. Defaults to 256.
 -- VBATCHSIZE: int = Number of elements per virtual batch, used for differential privacy. Defaults to 256.
 -- NBROUNDS: int = Number of rounds. Defaults to 3.
