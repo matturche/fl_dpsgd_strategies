@@ -7,6 +7,22 @@ We chose to use the [LEAF](https://leaf.cmu.edu/) benchmark to show the results 
 This repository is made to act as an extension of the LEAF repository. Follow the installation instructions on the [LEAF github](https://github.com/TalwalkarLab/leaf/tree/master/data/femnist) before continuing. Once it's done download this repository and paste it inside the root directory of LEAF.
 To construct the FEMNIST dataset as we did you should run the `preprocess.sh` file with the full-sized dataset command, as stated in their GitHub.
 
+The model used is based on the basic CNN provided by LEAF for the femnist dataset and adapted for Differential Privacy, differences are listed below:
+
+| Layer      	|         LEAF CNN         	|           DP CNN          	|
+|------------	|:------------------------:	|:-------------------------:	|
+| Conv       	| 32 filters 5x5, Pad same 	| 32 filters 5X5, Pad valid 	|
+| Activation 	|           ReLU           	|            Tanh           	|
+| Norm       	|            --            	|       GroupNorm, 16       	|
+| MaxPool    	|            2x2           	|            2x2            	|
+| Conv       	| 64 filters 5x5, Pad same 	| 64 filters 5X5, Pad valid 	|
+| Activation 	|           ReLU           	|            Tanh           	|
+| Norm       	|            --            	|       GroupNorm, 16       	|
+| MaxPool    	|            2x2           	|            2x2            	|
+| Dense      	|        2048 units        	|             --            	|
+| Softmax    	|         62 units         	|          62 units         	|
+| Parameters 	|         6,603,710        	|          115,646          	|
+
 ## Installation
 You can create the virtual environment and install dependencies using [Poetry](https://python-poetry.org/). If it was not already installed on your computer you should restart it so Poetry commands can work on your terminal. Move to the root of this project ("leaf-fl-dp" directory) and run `poetry install`. Then run `poetry shell` to instantiate the virtual environment.
 
@@ -31,7 +47,7 @@ The best model found will be saved in the `hyperparam_finding/` directory.
 For training models, you should launch `train.py`. You can add the following arguments to the script:
 
 ```python
--d: str = Which dataset to use for training. (femnist, mnist, cifar10).
+-d: str = Which dataset to use for training. (emnist, mnist, cifar10).
 -dp: int(bool) = Whether Differential Privacy is used or not. Defaults to 0.
 -b: int = Number of elements per batch. Defaults to 256.
 -vb: int = Virtual batch size for differential privacy. Defaults to 256.
@@ -42,6 +58,27 @@ For training models, you should launch `train.py`. You can add the following arg
 ```
 
 Trained models and results can be found in the `models/` directory.
+
+Hyperparameters used to get the results from our paper are the following:
+
+| Datasets 	|    η   	|    σ   	|    C   	|
+|----------	|:------:	|:------:	|:------:	|
+| MNIST    	| 0.0011 	| 0.8086 	| 0.8032 	|
+| EMNIST   	| 0.0019 	| 0.7403 	| 1.4960 	|
+| CIFAR10  	| 0.0011 	| 0.8071 	| 1.4584 	|
+| KMNIST   	| 0.0044 	| 0.7481 	|   1.0  	|
+
+With learning rate η, noise multiplier σ and max grad norm C and batch size set to 512.
+
+Other sets include the ones made on KMNIST with varying batch sizes: 
+
+| Batch size 	|    η   	|    σ   	|    C   	|
+|------------	|:------:	|:------:	|:------:	|
+| 512        	| 0.0044 	| 0.7481 	|   1.0  	|
+| 256        	| 0.0042 	| 0.9071 	| 1.2561 	|
+| 128        	| 0.0012 	| 0.7383 	| 1.0497 	|
+| 64         	| 0.0004 	| 0.7240 	| 1.4084 	|
+| 32         	| 0.0008 	| 0.8372 	| 1.2553 	|
 
 
 ### Federated 
@@ -84,4 +121,7 @@ With:
 -- STRAT: str = Strategy used to respect target epsilon["fix", "adaptive", "hybrid"]. Defaults to "vanilla".
 -- SEED: int = Seed for generating indexes to get clients. Defaults to 42.
 ```
-Models and results are located in the `server/` folder. 
+Models and results are located in the `server/` folder. All our experiments where ran with the Hyperparameters set from KMNIST with batch size 512:
+|    η   	|    σ   	|    C   	|
+|:------:	|:------:	|:------:	|
+| 0.0044 	| 0.7481 	|   1.0  	|
